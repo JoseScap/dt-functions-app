@@ -16,12 +16,12 @@ public class DTCreationDTOExample : OpenApiExample<DTCreationDTO>
 {
     public override IOpenApiExample<DTCreationDTO> Build(NamingStrategy namingStrategy = null)
     {
-        this.Examples.Add(
+        Examples.Add(
             OpenApiExampleResolver.Resolve(
                 "DTCreationDTOExample",
                 new DTCreationDTO()
                 {
-                    Fullname = "Jane Doe"
+                    Fullname = "John Doe"
                 },
                 namingStrategy
             )
