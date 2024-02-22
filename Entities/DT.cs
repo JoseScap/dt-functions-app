@@ -22,7 +22,7 @@ public class DT
     {
         id = Guid.NewGuid().ToString();
         fullname = Fullname;
-        money = 0;
+        money = 1000000;
     }
 }
 
