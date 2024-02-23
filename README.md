@@ -139,6 +139,14 @@ recuperar el document endpoint
 }
 ```
 
+luego puedo listar todas las DBs con
+
+az cosmosdb list
+
+podemos dar detalle con el atributo query
+
+az cosmosdb list --query "[].{de:documentEndpoint,rg:resourceGroup}"
+
 <!-- Retrieve the primary key -->
 az cosmosdb keys list --name <myCosmosDBacct> --resource-group az204-cosmos-rg
 
