@@ -22,7 +22,7 @@ public class DT
     {
         id = Guid.NewGuid().ToString();
         fullname = Fullname;
-        money = 1000000;
+        money = 1000000; // TODO: Implementar triggers para que el dinero se genere solo
     }
 }
 
