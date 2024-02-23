@@ -1,0 +1,7 @@
+### [POST] - [OK] - HttpCreateDT
+POST http://localhost:7071/api/HttpCreateDT
+Content-Type: application/json
+
+{
+    "fullname": "Nombre completo"
+}
