@@ -1,42 +1,30 @@
 using System.IO;
-using System.Net;
 using System.Threading.Tasks;
-using Company.Function.DTOs;
-using Company.Function.Clients;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Company.Function.DTOs;
+using Company.Function.Clients;
 using Company.Function.Entities;
 
-namespace Company.Function
+namespace Company.Function;
+public static class HttpCreateDT
 {
-    public class HttpCreateDT
+    [FunctionName("HttpCreateDT")]
+    public static async Task<IActionResult> Run(
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+        ILogger log)
     {
-        private readonly ILogger<HttpCreateDT> _logger;
+        log.LogInformation("HttpCreateDT function processed a request.");
 
-        public HttpCreateDT(ILogger<HttpCreateDT> log)
+        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+        var dto = JsonConvert.DeserializeObject<DTCreationDTO>(requestBody);
+
+        if (dto != null && !string.IsNullOrEmpty(dto.Fullname))
         {
-            _logger = log;
-        }
-
-        [FunctionName("HttpCreateDT")]
-        [OpenApiOperation(operationId: "CreateDT", tags: new[] { "Create DT" })]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DTCreationDTO), Description = "DTCreationDTO", Required = true)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(DT), Description = "The OK response")]
-        public async Task<IActionResult> CreateDT(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
-            HttpRequest req)
-        {
-            _logger.LogInformation("HttpCreateDT function processed a request.");
-
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var dto = JsonConvert.DeserializeObject<DTCreationDTO>(requestBody);
-
             var cosmosClient = Client.CosmosSetupClientAsync();
             var database = await Client.CreateDatabaseAsync(cosmosClient, "az-204-cosmos-dt");
             var container = await Client.CreateContainerAsync(database, "az-204-container-dt", "/fullname");
@@ -45,8 +33,23 @@ namespace Company.Function
 
             await container.CreateItemAsync(dt);
 
-            return new OkObjectResult(dt);
+            return new OkObjectResult(
+                new GenericResponse<DT, string>
+                {
+                    Data = dt,
+                    Error = null
+                }
+            );
+        }
+        else
+        {
+            return new BadRequestObjectResult(
+                new GenericResponse<string, string>
+                {
+                    Data = null,
+                    Error = "Data of body request is not valid"
+                }
+            );
         }
     }
 }
-
