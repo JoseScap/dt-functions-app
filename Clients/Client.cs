@@ -5,7 +5,7 @@ namespace Company.Function.Clients;
 public static class Client
 {
     private static readonly string EndpointUri = "https://dt-cosmos-db.documents.azure.com:443/";
-    private static readonly string PrimaryKey = "p7Z4rv7VfjJLTdC2m7zxCIdvXT0fqfeymH7S0YzJWmLdlBuds0It9yN5fK0vZ6FAyzFlrgLOz7egACDbVmzodQ==";
+    private static readonly string PrimaryKey = "";
 
     public static CosmosClient CosmosSetupClientAsync()
     {
