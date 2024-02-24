@@ -33,7 +33,8 @@ public static class HttpCreateDT
 
             await container.CreateItemAsync(dt);
 
-            return new OkObjectResult(
+            return new CreatedAtRouteResult(
+                $"/DT/{dt.id}",
                 new GenericResponse<DT, string>
                 {
                     Data = dt,
@@ -41,6 +42,7 @@ public static class HttpCreateDT
                 }
             );
         }
+
         return new BadRequestObjectResult(
             new GenericResponse<string, string>
             {

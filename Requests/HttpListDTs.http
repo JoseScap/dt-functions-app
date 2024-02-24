@@ -1,0 +1,2 @@
+### [GET] - [OK] - HttpListDTs
+GET http://localhost:7071/api/HttpListDTs
