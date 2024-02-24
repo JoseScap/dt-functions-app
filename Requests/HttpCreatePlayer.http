@@ -1,0 +1,9 @@
+### [POST] - [OK] - HttpCreateDT
+POST http://localhost:7071/api/HttpCreatePlayer
+Content-Type: application/json
+
+{
+    "fullname": "Nombre completo",
+    "baseprice": 20000,
+    "stars": 4
+}

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -11,32 +12,39 @@ using Company.Function.Clients;
 using Company.Function.Entities;
 
 namespace Company.Function;
-public static class HttpCreateDT
+public static class HttpCreatePlayer
 {
-    [FunctionName("HttpCreateDT")]
-    public static async Task<IActionResult> HttpCreateDTRun(
+    [FunctionName("HttpCreatePlayer")]
+    public static async Task<IActionResult> HttpCreatePlayerRun(
         [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
         ILogger log)
     {
-        log.LogInformation("HttpCreateDT function processed a request.");
+        log.LogInformation("HttpCreatePlayer function processed a request.");
+
+        string name = req.Query["name"];
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-        var dto = JsonConvert.DeserializeObject<DTCreationDTO>(requestBody);
+        var dto = JsonConvert.DeserializeObject<PlayerCreationDTO>(requestBody);
 
-        if (dto != null && !string.IsNullOrEmpty(dto.Fullname))
+        if (
+            dto != null &&
+            !string.IsNullOrEmpty(dto.Fullname) &&
+            dto.BasePrice >= 0 &&
+            dto.Stars >= 1 &&
+            dto.Stars <= 5)
         {
             var cosmosClient = Client.CosmosSetupClientAsync();
             var database = await Client.CreateDatabaseAsync(cosmosClient, "az-204-cosmos-dt");
-            var container = await Client.CreateContainerAsync(database, "az-204-container-dt", "/fullname");
+            var container = await Client.CreateContainerAsync(database, "az-204-container-player", "/fullname");
 
-            DT dt = new DT(dto.Fullname);
+            Player player = new Player(dto.Fullname, dto.BasePrice, dto.Stars);
 
-            await container.CreateItemAsync(dt);
+            await container.CreateItemAsync(player);
 
             return new OkObjectResult(
-                new GenericResponse<DT, string>
+                new GenericResponse<Player, string>
                 {
-                    Data = dt,
+                    Data = player,
                     Error = null
                 }
             );

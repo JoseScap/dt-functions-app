@@ -6,7 +6,7 @@ public class DT
 {
     public string id { get; set; }
     public string fullname { get; set; }
-    public double money { get; set; }
+    public int money { get; set; }
 
     public DT() { }
     public DT(string Fullname)
