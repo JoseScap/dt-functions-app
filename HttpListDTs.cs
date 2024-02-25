@@ -66,7 +66,7 @@ namespace Company.Function
                     new GenericResponse<string, string>
                     {
                         Data = null,
-                        Error = "Data of body request is not valid"
+                        Error = "Something went wrong, we are working on. Please, try again later."
                     }
                 );
             }
